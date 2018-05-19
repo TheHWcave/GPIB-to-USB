@@ -16,13 +16,14 @@ The GPIB-to-USB interface acts as a serial port on a connected PC, using speed 1
  Ha,   - perform a read of device a without sending any command (note that the comma is still needed).  This command is new in version 1.5
 
 The file:
-  - GPIBLogger.py 
+  - GPIBLogger.py
+  
 is a little Python3 commandline utility I wrote that uses the GPIB-to-USB interface above to periodically read a measurement (e.g. voltage) from a GPIB-connected multimeter (e.g. Solartron 7150+) and logs it with a timestamp in a file (CSV format) to allow it to be directly opened as a spreadsheet program like MS Excel or LibreOffice Calc. 
 
 GPIBLogger.py supports the follwing commandline parameters all of which are optional because the defaults happen to match my setup (sorry). 
-'-i or --inp  : serial input device, default /dev/ttyUSB0'
-'-o or --out  : filename in default directory. default: LOG_<date_time>.csv'
-'-t or --time : time in seconds between polls, default: 1.0'
-'-d or --delta: if specified, logging occurs only if the value differs from previous by more than delta '
-'-a or --addr : GPIB address, default 3'
-'-c or --cmd  : GPIB command string needed to poll data, default = none'
+- '-i or --inp  : serial input device, default /dev/ttyUSB0'
+- '-o or --out  : filename in default directory. default: LOG_<date_time>.csv'
+- '-t or --time : time in seconds between polls, default: 1.0'
+- '-d or --delta: if specified, logging occurs only if the value differs from previous by more than delta '
+- '-a or --addr : GPIB address, default 3'
+- '-c or --cmd  : GPIB command string needed to poll data, default = none'

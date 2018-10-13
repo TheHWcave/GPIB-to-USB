@@ -34,7 +34,7 @@
 # -c or --cmd  : GPIB command string needed to poll data, default = none
 #-----------------------------
 import serial,argparse
-from time import sleep,time,localtime,strftime
+from time import sleep,time,localtime,strftime,perf_counter
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--time','-t',help='interval time in seconds between measurements (def=1.0)',
@@ -86,7 +86,7 @@ else:
 	pollmsg   = 'H'+str(arg.address)+',\x0a'
 	
 
-now = 0.0
+start = perf_counter()
 old = 9.9999E99
 
 # change timeout of GPIB-to-USB interface to 1 s to wait in case we 
@@ -98,21 +98,35 @@ while True:
 	try:
 		GPIB2USB.write(pollmsg.encode('iso-8859-1'))
 		data = readdata()
+		now = perf_counter() - start
+		nowstr='{:05.1f}'.format(now)
 		if data.startswith('!'):
 			print(data)
 		else:
 			val = data.split('  ')
-			cur = float(val[0])
+			try:
+				cur = float(val[0])
+			except ValueError:
+				cur=old
+				print('Valueerror: '+val[0])
+				if val[0].startswith('+') or val[0].startswith('-'):
+					# see if we can extract a value
+					valtmp= val[0].spit(' ')
+					try:
+						cur = float(valtmp[0])
+					except:
+						print(' no value')
+					
 			if arg.delta_val > 0.0:
 				if abs(old - cur) >= arg.delta_val:
-					f.write(str(now)+ ','+val[0]+','+val[1])
-					print(str(now)+','+val[0]+','+val[1])
+					f.write(nowstr+ ','+val[0]+','+val[1])
+					print(nowstr+','+val[0]+','+val[1])
 					old = cur
 			else:
-				f.write(str(now)+ ','+val[0]+','+val[1])
-				print(str(now)+','+val[0]+','+val[1])
+				f.write(nowstr+ ','+val[0]+','+val[1])
+				print(nowstr+','+val[0]+','+val[1])
 		sleep(arg.int_time)
-		now = now + arg.int_time
+		#now = now + arg.int_time
 	except KeyboardInterrupt:
 		quit()
 GPIB2USB.disconnect() # Disconnects the device

@@ -27,3 +27,10 @@ GPIBLogger.py supports the follwing commandline parameters all of which are opti
 - '-d or --delta: if specified, logging occurs only if the value differs from previous by more than delta '
 - '-a or --addr : GPIB address, default 3'
 - '-c or --cmd  : GPIB command string needed to poll data, default = none'
+
+The file
+  - GPIB_Control.py
+
+Is a command line version to talk to the GPIB interface or, through it, to a device on the GPIB bus. For example, the command below will fetch a single measurement from a Solartron 7150+ multimeter (at address #3), print the result on stdout  and terminate. 
+
+GPIB_Control --port /dev/ttyUSB0 -a 3
